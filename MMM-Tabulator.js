@@ -32,7 +32,7 @@
 Module.register('MMM-Tabulator',{
 
     defaults: {
-        header: "Some Flights", // The module header text, if any
+        header: "Patientenaufrufe", // The module header text, if any
         maxItems: 10,           // MAX number of planes (table rows) to show
         updateInterval: 180     // [sec] Read the file every 3 min
         //fileUrl: "file:///home/pi/MagicMirror/modules/MMM-backlog/demo.json"
@@ -47,7 +47,7 @@ Module.register('MMM-Tabulator',{
 
     getDom: function() {
         let w = document.createElement("div");  // Let w be the "wrapper"
-        w.id = "flighttable";                   // The id used by Tabulator
+        w.id = "patlist";                   // The id used by Tabulator
 
         if (!this.loaded) {
             w.innerHTML = "Loading...";
@@ -132,55 +132,37 @@ Module.register('MMM-Tabulator',{
             // placeholder: deg2dir
         });
 
-        let flightTable = $("#flighttable");
-        var flightTableHeight = ( this.config.maxItems * 33 + 33 );   // @12px font-size we have [~33 px/row]
+        let patlist = $("#patlist");
+        var patlistHeight = ( this.config.maxItems * 33 + 33 );   // @12px font-size we have [~33 px/row]
 
         flightTable.tabulator({
-            height:flightTableHeight,           // [px] Set MAX height of table, this enables the Virtual DOM and improves render speed
+            height:patlistHeight,           // [px] Set MAX height of table, this enables the Virtual DOM and improves render speed
             height:205,                         // Set height of table, this enables the Virtual DOM and improves render speed
-            //layout:"fitColumns",                // Fit columns to width of table (optional)
+            layout:"fitColumns",                // Fit columns to width of table (optional)
             //headerSort:false,                   // Disable header sorter
             resizableColumns:false,             // Disable column resize
             responsiveLayout:true,              // Enable responsive layouts
-            placeholder:"Waiting for data...",  // Display message to user on empty table
+            placeholder:"Warte auf Daten...",   // Display message to user on empty table
             initialSort:[                       // Define the sort order:
-                {column:"altitude",     dir:"asc"},     // 1'st
+                {column:"patName",     dir:"asc"},     // 1'st
                 //{column:"flight",     dir:"desc"},    // 2'nd
                 //{column:"bearing",    dir:"asc"},     // 3'rd
             ],
             columns:[
-                {title:"Flight",        field:"flight",         headerSort:false, sortable:false, responsive:0, align:"left"}, // , width:250},
-                {title:"CallSig",       field:"callsign",       headerSort:false, sortable:false, visible:true, responsive:3},
-                {title:"To",            field:"destination",    headerSort:false, sortable:false, responsive:0},
-                {title:"From",          field:"origin",         headerSort:false, sortable:false, responsive:0},
-                {title:"Speed",         field:"speed",          headerSort:false, sortable:false, responsive:2, formatter:"kn2km"}, // [km/h]
-                {title:"Bearing",       field:"bearing",        headerSort:false, sortable:false, responsive:1},
-                {title:"Alt [m]",       field:"altitude",       headerSort:false, sortable:false, responsive:0, formatter:"ft2mt", align:"right", sorter:"number"},
-                //{title:"Alt [m]",       field:"altitude",       sortable:true,  responsive:0, align:"right", sorter:"number", mutateType:"data", mutator:ft2met"},
-                // Additional items:
-                {title:"F24id",         field:"id",             headerSort:false, sortable:false, visible:false},
-                {title:"RegID",         field:"registration",   headerSort:false, sortable:false, visible:false},
-                {title:"Model",         field:"model",          headerSort:false, sortable:false, visible:true,  responsive:1},
-                {title:"ModeS",         field:"modeSCode",      headerSort:false, sortable:false, visible:false},
-                {title:"Radar",         field:"radar",          headerSort:false, sortable:false, visible:false},
-                {title:"Lat",           field:"latitude",       headerSort:false, sortable:false, visible:false},
-                {title:"Lon",           field:"longitude",      headerSort:false, sortable:false, visible:false},
-
-                {title:"Time",          field:"timestamp",      headerSort:false, sortable:false, visible:false, responsive:1, formatter:"ep2time"},
-                {title:"RoC [ft/m]",    field:"climb",          headerSort:false, sortable:false, visible:false},
-                {title:"Squawk",        field:"squawk",         headerSort:false, sortable:false, visible:true, responsive:1}, // formatter:"sqCheck"},
-                {title:"isGND",         field:"ground",         headerSort:false, sortable:false, visible:false},
-                {title:"isGlider",      field:"glider",         headerSort:false, sortable:false, visible:false},
+                {title:"Patient*in",    field:"patName",         headerSort:false, sortable:false, visible:true, align:"left"}, // , width:250},
+                {title:"Behandler*in",  field:"docName",         headerSort:false, sortable:false, visible:true, align:"left"},
+                {title:"Raum",          field:"roomName",        headerSort:false, sortable:false, visible:true, align:"left"},
+                {title:"Neu",           field:"new",             headerSort:false, sortable:false, visible:true, align:"left"}
             ],
         });
 
         $(window).resize(function () {
-            flightTable.tabulator("redraw");
+            patlist.tabulator("redraw");
         });
     },
 
     setTableData: function(data) {
-        $("#flighttable").tabulator("setData", data);
+        $("#patlist").tabulator("setData", data);
     }
     //===================================================================================
 
