@@ -26,6 +26,7 @@
 'use strict';
 
 const fs = require('fs');
+const XMLHttpRequest = require('xhr2');
 
 module.exports = NodeHelper.create({
 
@@ -34,26 +35,24 @@ module.exports = NodeHelper.create({
     },
 
     readData: function() {
-        const myfile = 'modules/MMM-Tabulator/demo.json'; // The demo API use improper JSON
+        const myfile = 'modules/MMM-Tabulator/medilounge.json';
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://192.168.0.8:8081/waitingroom/assignment", true);
+        xhr.onreadystatechange = onResponse;
+        xhr.send(null);
 
-        // Consider using readFileSync() and/or using utf8:
-        // see: https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile/14078644
-        //fs.readFileSync( myfile, 'utf8', (err, data) => {
-        //fs.readFile( myfile, 'utf8', (err, data) => {
-        fs.readFile( myfile, 'ascii', (err, data) => { // F24 JSON source is probably not UTF-8
-            if (err) throw err;
-            //console.log(data);
-            let cleanData = jZen(data);
-            if (isJSON(cleanData) ) {
-                this.sendSocketNotification("NEW_DATA", cleanData);
-            } else {
-                // So WTF is it?
-                console.log("JSON: false");
-                console.log("isAO(dirty): " + isAO(data));
-                console.log("isAO(clean): " + isAO(cleanData));
-                console.log("Data:\n" + data);
+        function onResponse() {
+            if (xhr.readyState != 4)  { return; }
+                var serverResponse = xhr.responseText;
+                console.log(serverResponse);
+                const fs = require('fs');
+                fs.writeFile(myfile, serverResponse, function(err) {
+                    if(err) {
+                        return console.log(err);
+                    }
+                    console.log("JSON saved as file medidemo.json");
+                }); 
             }
-        });
     },
 
     socketNotificationReceived: function (notification, payload) {

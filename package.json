@@ -25,6 +25,8 @@
   "dependencies": {
     "jquery": "^3.3.1",
     "jquery-ui-dist": "^1.12.1",
-    "jquery.tabulator": "^3.4.3"
+    "jquery.tabulator": "^3.5.3",
+    "xhr2": "^0.1.4",
+    "xmlhttprequest": "^1.8.0"
   }
 }
